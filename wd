@@ -81,6 +81,83 @@ Net user hack     查看指定用户的信息
 Net user guest /active:yes   激活guest用户
 Net user guest 123
 
+smss.exe(会话管理器)是Windows系统中第一个创建的用户模式进程，随着系统一起启动。位于C:\Windows\System32\smss.exe。在Windows启动的过程中，smss.exe作用过程分为7个步骤：
+(1)创建LPC port对象，为MSDOS定义符号连接，例如COM1、LPT1，假如安装有Terminal Services，则创建\Sessions目录。
+(2)运行注册表中的
+HKLM\SYSTEM\CurrentControlSet\Control\SessionManager\BootExecute定义的程序，一般默认的是运行Autochk
+(3) 执行
+HKLM\SYSTEM\CurrentControlSet\Control\SessionManager\PendingFileRenameOperations
+表键中的延迟，删除，改名操作
+(4) 加载
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SessionManager\KnownDLLs
+初始化paging files和注册表
+(5) 创建系统环境变量，这些定义在HKLM\System\CurrentControlSet\Session Manager\Environment
+(6) 加载和初始化Win32子系统的内核模块Win32k.sys
+(7) 创建Win32子系统服务器进程，包括csrss.exe，创建Winlogon.exe进程
+
+
+svchost.exe
+svchost.exe是Windows系统上不可缺少的进程，是动态链接库（DLL）执行程序名称，在windows下一般会有4个以上的svchost.exe进程，负责提供更多的系统服务。正常路径是在C:\Windows\System32下。在启动的时候svchost.exe检查注册表中的位置来构建需要加载的服务列表，这就会使多个svchost.exe在同一时间运行。HKLM\Software\Mcrosoft\Windows Nt\CurrentVersion\Svchost每个键下的值都代表一个svchost.exe组。
+ 
+Explorer.exe
+Explorer.exe是windows系统资源管理器进程，用于管理操作系统的图形界面，包括开始菜单、桌面下访的任务栏、桌面图标和文件管理，随系统一起启动，路径为C:\Windows\explorer.exe 结束该进程后，Windows桌面全部消失，此时可以通过输入ctrl+alt+del打开任务管理器，新建任务explorer来恢复桌面环境。
+  
+  
+Iexplorer.exe
+Iexplorer.exe是IE浏览器的进程，路径为C:\ProgramFiles\InternetExplorer
+ 
+ 
+Taskmgr.exe
+Taskmgr.exe进程通常被称为“Windows任务管理器”。这个进程并非一直存在，只有当我们启动任务任务管理器的时候才会看到taskmgr.exe进程。位置在C:\Windows\System32。
+ 
+
+Csrss.exe
+Csrss.exe是Windows系统的核心进程，用途是控制图形字系统、负责管理线程（创建或删除），并执行16为的DOS环境即cmd.exe的图形窗口等。（在Win7之后新增Conhost.exe替代）。路径为C:\Windows\System32\csrss.exe。
+相关的恶意进程可能会修改csrss.exe或者通过相似的进程名字迷惑用户，有：csrsc.exe csrs.exe csrsses.exe csrssc.exe csrse.exe，
+
+
+Lsass.exe
+Lsa shell 本地安全认证服务，其作用是处理密码变更以及验证尝试登录到计算机的用户，如果登录成功他会创建该用户的访问令牌，并用它来启动外壳程序explorer.exe。路径为C:\Windows\System32。
+
+
+Winlogon.exe
+Winlogon.exe负责执行与Windows登录过程中的相关任务，例如登录时候winlogon.exe进程负责将用户的配置文件到注册表中，允许程序使用HLCU下的键。该进程还会监听用户是否按下ctrl+alt+del，以确保在安全桌面上登录，其他程序无法监听到用户数输入的密码。当启动PC的时候，如果Windows无法启动winlogon.exe、csrss.exe等其他关键进程，那么windows将蓝屏。路径为C:\Windows\System32。
+ 
+
+Dwm.exe
+Dwm是Desktop WindowManage 的缩写。其描述为桌面窗口管理器，在默认情况下，dwm.exe会随着系统自启动并一直运行，此进程主要功能可以使windows操作系统上显示的各种窗口图形效果更美观。可以结束该进程。
+ 
+
+Conhost.exe
+Conhost.exe在系统中被称为“控制台窗口主机”，其主要功能是为命令行程序（cmd.exe）提供类似于csrss.exe进程的图形子系统等功能支持。路径为C:\Windows\System32
+
+
+Ctfmon.exe
+Ctfmon.exe进程使微软定义的属于Micrsoft office套件的进程。作用是为负责控制可选用户输入方法技术提供文本输入服务支持（包括语音识别、手写识别、键盘、翻译等），最显著表现就是启动语言栏组件。路径位于C:\Windows\System32。在Windows 7中虽然也能在System32目录下发现Ctfmon.exe进程，但其并不会启动，即便是我通过双击来启动Ctfmon.exe，屏幕也只是闪一下，在任务管理器里面还没有发现此进程。
+
+
+Conime.exe 
+Conime.exe进程并不会随着系统启动而启动。只有在打开了命令行程序（cmd.exe）后才能看到conime.exe进程随之启动。路径为C:\Windows\System32，但是在Windows10和7下都没这个文件。
+
+
+Spoolsv.exe
+Spoolsv.exe全程SpoolerSubSystem App(后台处理程序子系统应用程序)，是打印后台处理程序打印接口的主要组成部分。他的功能就是管理后台打印作业。给本地打印机发送打印任务，缓存打印数据，负责对多个打印任务进行队列。如果我们需要打印文件图片必须有spoolsv.exe进程运行。此进程运行没窗口。路径为C:\Windows\System32\spoolsv.exe。
+
+
+Rundll32.exe
+Rundll.exe，可以把它分成两部分，Run(运行)和DLL(动态数据库)，所以，此程序的功能是运行那些不能作为程序单独运行的DLL文件。而Rundll32.exe则用来运行32位DLL文件。有些木马是利用Rundll32.exe加载DLL形式运行的，但大多数情况下Rundll32.exe都是加载系统的DLL文件。
+
+
+Wininit.exe
+Wininit.exe是Windows8之后的核心进程，工作是开启一些主要的windows的后台服务，比如中央服务器管理器service CentralManager(sCM)、本地安全验证子系统Local Security Authoritysubsystem(LsAss)和本地会话管理器Local session Manager(LsM.exe)。位于C:\Windows\System32下。关闭该进程后Windows系统会蓝屏。
+
+
+Services.exe
+Services.exe被描述为服务和控制器应用程序。其主要功能是负责运行和结束系统服务。通常以system用户名在运行。路径为C:\Windows\system32。Serviece.exe进程在开机的时候会占用很多的CPU及内存资源，用Process Monitor工具分析发现居然在疯狂读写WINDOWS\LastGood.tmp\INF\oem32.inf和WINDOWS\LastGood.tmp\INF\oem32.pnf文件，估计这可能是某个软件正准备安装新驱动时驱动文件损坏导致的结果。
+ 
+
+Cmd.exe
+默认情况下，Admin权限是无法删除原生的cmd.exe，需要TrustedInstaller权限才可以删除，但是复制的可以删除。
 
 0x02：常用端口及服务
 数据库类端口：
